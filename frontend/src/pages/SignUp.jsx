@@ -1,0 +1,85 @@
+import MainContainer from "../containers/MainContainer";
+import { Box, Button, Link, TextField, Typography } from "@mui/material";
+import { Field, Form, Formik } from "formik";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useSignUpMutation } from "../services/authService";
+import { useEffect } from "react";
+
+const SignUp = () => {
+  const navigate = useNavigate();
+
+  const [signUp, { data, error, isSuccess, isError, isLoading }] =
+    useSignUpMutation();
+
+  const handleSignUp = ({ email }) => {
+    signUp({ email });
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      alert(data?.message);
+      navigate("/");
+    }
+
+    if (isError) alert(error?.data?.message);
+  }, [data, error, isSuccess, isError]);
+
+  return (
+    <MainContainer sx={{ height: "100vh" }}>
+      <Box>
+        <Formik
+          initialValues={{ email: "" }}
+          onSubmit={(values) => {
+            const email = values.email;
+            handleSignUp(email);
+          }}
+        >
+          {({ values, handleChange, handleBlur }) => (
+            <Form>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "15px",
+                }}
+              >
+                <Field
+                  as={TextField}
+                  name="email"
+                  label="Email"
+                  value={values.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+
+                <Button type="submit" disabled={isLoading} variant="contained">
+                  {!isLoading ? "Registrarse" : "Cargando..."}
+                </Button>
+
+                <Box sx={{ marginTop: "5px", textAlign: "center" }}>
+                  <Typography variant="body2">
+                    ¿Ya tienes cuenta?{" "}
+                    <Link
+                      component={RouterLink}
+                      to={"/"}
+                      sx={{
+                        cursor: "pointer",
+                        fontWeight: 600,
+                        color: "#1E88E5",
+                      }}
+                    >
+                      {"Inicia Sesión"}
+                    </Link>
+                  </Typography>
+                </Box>
+              </Box>
+            </Form>
+          )}
+        </Formik>
+      </Box>
+    </MainContainer>
+  );
+};
+
+export default SignUp;
