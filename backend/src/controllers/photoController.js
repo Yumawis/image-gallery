@@ -4,7 +4,7 @@ const User = require("../models/User");
 const uploadPhoto = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { imageBase64 } = req.body;
+    const { base64Image } = req.body;
 
     const userExists = await User.exists({ _id: userId });
 
@@ -14,13 +14,13 @@ const uploadPhoto = async (req, res) => {
       });
     }
 
-    if (!imageBase64) {
+    if (!base64Image) {
       return res.status(400).json({
-        data: { message: "La variable imageBase64 es requerida" },
+        data: { message: "La variable base64Image es requerida" },
       });
     }
 
-    const newPhoto = new Photo({ imageBase64, userId });
+    const newPhoto = new Photo({ base64Image, userId });
 
     const savedPhoto = await newPhoto.save();
 
@@ -50,7 +50,7 @@ const getPhotoByUser = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const photos = await Photo.find({ userId }).select("-userId -_id")
+    const photos = await Photo.find({ userId }).select("-userId -_id");
 
     const response = {
       data: {

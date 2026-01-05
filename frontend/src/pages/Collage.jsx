@@ -1,30 +1,33 @@
 import { Box, Typography } from "@mui/material";
-import CardCollage from "../components/CardCollage";
+import CardCollage from "../components/cards/CardCollage";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useGetPhotoByUserQuery } from "../services/photoServices";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { selectUserId } from "../store/slices/authSlice";
 
 const Collage = () => {
-  const location = useLocation();
-
-  const [userId, setUserId] = useState(null);
+  const userId = useSelector(selectUserId);
 
   const { data: photos, isLoading } = useGetPhotoByUserQuery(userId, {
     skip: !userId,
   });
 
-  useEffect(() => {
-    if (location) {
-      setUserId(location?.state?.id);
-    }
-  }, []);
+  const photosCount = photos?.length ?? 0;
+
+  const gridTemplateColumns =
+    photosCount < 2
+      ? "repeat(1, 350px)"
+      : "repeat(auto-fill, minmax(350px, 1fr))";
 
   return (
     <Box
       sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 3 }}
     >
-      <Typography sx={{ textAlign: "center" }}>Galeria de Fotos</Typography>
+      <Typography variant="h5" sx={{ textAlign: "center", fontWeight: "bold" }}>
+        GALERÍA DE FOTOS
+      </Typography>
 
       {isLoading ? (
         <Typography>Cargando Fotos...</Typography>
@@ -33,7 +36,7 @@ const Collage = () => {
           sx={{
             width: "100%",
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gridTemplateColumns,
             gap: 3,
             padding: 2,
             alignItems: "stretch",

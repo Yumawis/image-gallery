@@ -24,7 +24,7 @@ const CardCollage = ({ photo }) => {
         }}
       >
         <img
-          src={`data:image/png;base64,${photo?.imageBase64}`}
+          src={`data:image/png;base64,${photo?.base64Image}`}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
       </Box>

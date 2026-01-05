@@ -5,5 +5,6 @@ import { API_URL } from "../config/app.config";
 export const baseAPi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
+  tagTypes: ["Photo"],
   endpoints: () => ({}),
 });

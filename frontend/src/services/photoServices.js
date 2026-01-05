@@ -3,13 +3,16 @@ import { baseAPi } from "../store/baseApi";
 export const photoService = baseAPi.injectEndpoints({
   endpoints: (builder) => ({
     uploadPhoto: builder.mutation({
-      query: ({ userId, imageBase64 }) => ({
+      query: ({ userId, base64Image }) => ({
         url: `photo/upload/${userId}`,
         method: "POST",
-        body: { imageBase64 },
+        body: { base64Image },
       }),
       transformResponse: (response) => response?.data,
       transformErrorResponse: (response) => response?.data,
+      invalidatesTags: (result, error, { userId }) => [
+        { type: "Photo", id: userId },
+      ],
     }),
 
     getPhotoByUser: builder.query({
@@ -19,6 +22,7 @@ export const photoService = baseAPi.injectEndpoints({
       }),
       transformResponse: (response) => response?.data?.result,
       transformErrorResponse: (response) => response?.data,
+      providesTags: (result, error, userId) => [{ type: "Photo", id: userId }],
     }),
   }),
 });

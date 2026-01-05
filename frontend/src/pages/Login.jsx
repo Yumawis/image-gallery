@@ -4,8 +4,11 @@ import { useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../services/authService";
 import MainContainer from "../containers/MainContainer";
+import { useDispatch } from "react-redux";
+import { setUserId } from "../store/slices/authSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [login, { data, error, isSuccess, isError, isLoading }] =
@@ -16,7 +19,10 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (isSuccess) navigate("collage", { state: data });
+    if (isSuccess) {
+      dispatch(setUserId(data?.id));
+      navigate("collage");
+    }
     if (isError) alert(error?.data?.message);
   }, [data, error, isSuccess, isError]);
 
